@@ -1,0 +1,151 @@
+<FrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+
+    <!-- 🔵 Background Color Layer -->
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#000000" />
+    <!-- 🔥 Generative Grid Background -->
+    <com.example.crashdetector.GridView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+    <!-- 🌌 Main UI Overlay -->
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/rootLayout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@android:color/transparent"
+        android:padding="24dp">
+
+        <!-- Title -->
+
+        <!-- Scanning Text -->
+
+        <!-- Manual Crash Test Button -->
+
+        <!-- STOP ALERT Button -->
+
+        <com.example.crashdetector.RotatingHeartbeat
+            android:id="@+id/rotatingHeartbeat"
+            android:layout_width="0dp"
+            android:layout_height="400dp"
+            android:layout_gravity="center"
+            android:visibility="visible"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.11" />
+
+        <TextView
+            android:id="@+id/timerText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="116dp"
+            android:fontFamily="@font/orbitron_semibold"
+            android:gravity="center"
+            android:shadowColor="#000000"
+            android:shadowDx="0"
+            android:shadowDy="0"
+            android:shadowRadius="16"
+            android:text="SCANNING"
+            android:textColor="@color/scanner_green_bright"
+            android:textSize="34sp"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toTopOf="@+id/startBtn"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.496"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.875" />
+
+        <Button
+            android:id="@+id/startBtn"
+            android:layout_width="300dp"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="84dp"
+            android:backgroundTint="#002196F3"
+            android:foreground="@drawable/border_transparent"
+            android:foregroundTint="#07CCF6"
+            android:shadowColor="#000000"
+            android:shadowDx="0"
+            android:shadowDy="0"
+            android:shadowRadius="5"
+            android:text="MANUAL TEST"
+            android:textColor="#0AC7F6"
+            android:visibility="visible"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
+
+        <!-- Settings Button -->
+
+        <Button
+            android:id="@+id/stopBtn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="2dp"
+            android:backgroundTint="#3FFF3F"
+            android:padding="40dp"
+            android:shadowColor="#0F0D0D"
+            android:shadowDx="0"
+            android:shadowDy="0"
+            android:shadowRadius="1"
+            android:text="STOP ALERT"
+            android:textColor="#B308FF01"
+            android:textSize="28sp"
+            android:textStyle="bold"
+            android:visibility="gone"
+            app:layout_constraintBottom_toTopOf="@+id/startBtn"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.930" />
+
+        <ImageView
+            android:id="@+id/warning"
+            android:layout_width="288dp"
+            android:layout_height="267dp"
+            android:layout_marginTop="96dp"
+            android:background="#00A02020"
+            android:src="@drawable/warning"
+            android:visibility="gone"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.493"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:tint="#C30000" />
+
+        <ImageButton
+            android:id="@+id/settingsBtn"
+            android:layout_width="51dp"
+            android:layout_height="51dp"
+            android:backgroundTint="#000A175F"
+            android:contentDescription="Settings"
+            android:scaleType="centerInside"
+            android:src="@drawable/settings"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" />
+
+        <ImageButton
+            android:id="@+id/statisticsBtn"
+            android:layout_width="51dp"
+            android:layout_height="51dp"
+            android:backgroundTint="#000A175F"
+            android:contentDescription="Statistics"
+            android:scaleType="centerInside"
+            android:src="@drawable/baseline_query_stats_24"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</FrameLayout>
