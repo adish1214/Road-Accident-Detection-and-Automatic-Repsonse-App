@@ -1,41 +1,33 @@
 package com.example.crashdetector;
 
 import android.Manifest;
-import android.app.Activity;
+import android.animation.ValueAnimator;
 import android.app.AlertDialog;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
+import android.location.LocationManager;
 import android.os.Build;
-import android.telephony.SmsManager;
 import android.os.Bundle;
 import android.os.CountDownTimer;
+import android.provider.Settings;
+import android.telephony.SmsManager;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.widget.ImageButton;
-import android.content.SharedPreferences;
-
-import android.animation.ValueAnimator;
-import androidx.core.content.ContextCompat;
-
-import android.content.SharedPreferences;
-
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.app.ActivityCompat;
-
-import android.location.LocationManager;
-import android.provider.Settings;
-
-
+import androidx.core.content.ContextCompat;
 
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
@@ -48,9 +40,11 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     private String emergencyNumber2 = "";
     private String emergencyNumber3 = "";
     private static final int PERMISSION_REQUEST_CODE = 100;
+    // Last known coordinates used in the emergency SMS.
     private double latitude = 0.0;
     private double longitude = 0.0;
     private boolean locationAvailable = false;
+    // Sensitivity settings are loaded from SharedPreferences.
     private int sensitivityLevel = 1;
     private float sensitivityFactor = 1.0f;
     // UI
@@ -99,6 +93,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     private static final float MODERATE_IMPACT = 18f;
     private static final float SEVERE_IMPACT = 25f;
 
+    // Classifies the detected event using impact and rotation thresholds.
     private String calculateSeverity(float impact, float rotation) {
         if (impact >= SEVERE_IMPACT * sensitivityFactor
                 || rotation >= 8.0f * sensitivityFactor) {
@@ -112,6 +107,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 
         return "MINOR";
     }
+    // Retrieves the device's last known location for the emergency message.
     private void updateLocation() {
 
         if (ActivityCompat.checkSelfPermission(this,
@@ -136,22 +132,20 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-
         // Bind UI
         timerText = findViewById(R.id.timerText);
         startBtn = findViewById(R.id.startBtn);
         settingsBtn = findViewById(R.id.settingsBtn);
         stopBtn = findViewById(R.id.stopBtn);
         rootLayout = findViewById(R.id.rootLayout);
-        warningImg=findViewById(R.id.warning);
-        rotatingHeartbeat=findViewById(R.id.rotatingHeartbeat);
+        warningImg = findViewById(R.id.warning);
+        rotatingHeartbeat = findViewById(R.id.rotatingHeartbeat);
         statisticsBtn = findViewById(R.id.statisticsBtn);
 
         loadSettings();
 
         // Location
         locationClient = LocationServices.getFusedLocationProviderClient(this);
-
 
         // Sensor
         sensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
@@ -287,9 +281,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
                 .show();
     }
 
-
-
-    // ================= SENSOR =================
+    // ================= SENSOR LIFECYCLE AND CRASH DETECTION =================
 
     @Override
     protected void onResume() {
@@ -325,14 +317,11 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
             float gy = event.values[1];
             float gz = event.values[2];
 
-
             rotationMagnitude =
-                    (float)Math.sqrt(gx*gx + gy*gy + gz*gz);
+                    (float) Math.sqrt(gx * gx + gy * gy + gz * gz);
 
             phoneRotated =
                     rotationMagnitude > ROTATION_THRESHOLD * sensitivityFactor;
-
-
 
             return;
         }
@@ -415,7 +404,6 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     @Override
     public void onAccuracyChanged(Sensor sensor, int accuracy) {}
 
-
     void simulateCrash() {
 
         if ("Unknown".equals(crashSeverity)) {
@@ -450,7 +438,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
                         "Sending alert in: " + (millisUntilFinished / 1000) + "s"
                 );
                 stopBreathing();
-                timerText.setShadowLayer(0,0,0,Color.TRANSPARENT);
+                timerText.setShadowLayer(0, 0, 0, Color.TRANSPARENT);
                 timerText.setTextColor(getResources().getColor(R.color.scanner_green_bright));
             }
 
@@ -503,7 +491,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
                     break;
 
                 case "MODERATE":
-                    rootLayout.setBackgroundColor(Color.rgb(255,140,0));
+                    rootLayout.setBackgroundColor(Color.rgb(255, 140, 0));
                     break;
 
                 case "SEVERE":
@@ -516,11 +504,10 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
             stopBtn.setVisibility(Button.VISIBLE);
             startBtn.setVisibility(Button.GONE);
             stopBreathing();
-            timerText.setShadowLayer(0,0,0,Color.TRANSPARENT);
+            timerText.setShadowLayer(0, 0, 0, Color.TRANSPARENT);
             timerText.setTextColor(getResources().getColor(R.color.scanner_green_bright));
             rotatingHeartbeat.setVisibility(rotatingHeartbeat.GONE);
             warningImg.setVisibility(ImageView.VISIBLE);
-
 
         } else {
             rootLayout.setBackgroundColor(Color.TRANSPARENT);
@@ -534,7 +521,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         }
     }
 
-    // ================= MESSENGER =================
+    // ================= EMERGENCY SMS =================
     private void sendToNumber(String phone, String message) {
 
         if (phone.isEmpty()) {
@@ -592,7 +579,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         }
     }
 
-    // ================= SETTINGS =================
+    // ================= LEGACY SETTINGS DIALOG =================
 
     void showSettingsDialog() {
 

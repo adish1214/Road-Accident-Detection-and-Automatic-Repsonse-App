@@ -7,7 +7,6 @@ import android.widget.EditText;
 import android.widget.Toast;
 import android.widget.SeekBar;
 import android.widget.TextView;
-
 import androidx.appcompat.app.AppCompatActivity;
 
 public class SettingsActivity extends AppCompatActivity {
